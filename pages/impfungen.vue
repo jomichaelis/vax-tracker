@@ -17,7 +17,7 @@
         class="elevation-1"
         sort-desc
         sort-by="date"
-        :loading="impfungen.length === 0"
+        :mobile-breakpoint="0"
       >
         <template v-slot:item.date="{ item }">
           {{ $moment(item.date).format("dddd, DD. MMMM YYYY") }}
@@ -52,7 +52,7 @@ export default {
     return {
       headers: [
         { text: 'Datum', align: 'start', sortable: true, value: 'date' },
-        { text: 'BioNTech-Pfizer', align: 'center', sortable: false, value: 'biontech' },
+        { text: 'Biontech-Pfizer', align: 'center', sortable: false, value: 'biontech' },
         { text: 'Johnson & Johnson', align: 'center', sortable: false, value: 'jandj' },
         { text: 'Modern', align: 'center', sortable: false, value: 'moderna' },
         { text: 'AstraZeneca', align: 'center', sortable: false, value: 'astrazeneca' },
@@ -63,6 +63,25 @@ export default {
   computed: {
     impfungen () {
       return this.$store.getters["impfungen/all"]
+    }
+  },
+  methods: {
+    async deleteItem (item) {
+      const confirmation = await this.$dialog.error({
+        text: 'Sind Sie sicher?',
+        title: 'Eintrag löschen',
+        icon: 'mdi-delete',
+        actions: {
+          false: 'Nein',
+          true: {
+            text: 'Ja',
+            color: 'error'
+          }
+        }
+      })
+      if (confirmation) {
+        await this.$store.dispatch('impfungen/deleteImpfung', item.id)
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import de from 'vuetify/es5/locale/de'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -78,7 +79,11 @@ export default {
           success: colors.green.accent3
         }
       }
-    }
+    },
+    lang: {
+      locales: { de },
+      current: 'de',
+    },
   },
 
   firebase: {

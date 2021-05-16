@@ -45,18 +45,18 @@
       <v-spacer />
       <v-menu
         bottom
-        min-width="200px"
+        min-width="230px"
         rounded
         offset-y
       >
         <template v-slot:activator="{ on }">
           <v-btn
             icon
-            large
+            small
             v-on="on"
             class="mr-1"
           >
-            <v-avatar color="primary">
+            <v-avatar color="primary" size="35">
               <img v-if="currentUser.photoURL" :src="currentUser.photoURL" alt="profile"/>
               <span v-else class="white--text headline">{{ currentUser.displayName[0] }}</span>
             </v-avatar>
@@ -65,13 +65,13 @@
         <v-card>
           <v-list-item-content class="justify-center">
             <div class="mx-auto text-center">
-              <v-avatar color="primary">
+              <v-avatar color="primary" class="mb-2">
                 <img v-if="currentUser.photoURL" :src="currentUser.photoURL" alt="profile"/>
                 <span v-else class="white--text headline">{{ currentUser.displayName[0] }}</span>
               </v-avatar>
               <h3>{{ currentUser.displayName }}</h3>
               <p class="caption mt-1">
-                {{ currentUser.email }}
+                {{ sanitizedMail }}
               </p>
               <v-divider class="my-3"></v-divider>
               <v-btn
@@ -137,6 +137,9 @@ export default {
   computed: {
     currentUser() {
       return this.$fire.auth.currentUser
+    },
+    sanitizedMail() {
+      return this.currentUser.email.length < 30 ? this.currentUser.email : (this.currentUser.email.slice(0,29) + '...')
     }
   },
   methods: {

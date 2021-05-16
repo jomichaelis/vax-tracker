@@ -9,7 +9,30 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field v-model="editedRecord.date" label="Datum" />
+                <v-menu
+                  v-model="datemenu"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      :value="dateFormatted"
+                      label="Datum"
+                      readonly
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="editedRecord.date"
+                    @input="datemenu = false"
+                    locale="de"
+                    :first-day-of-week="1"
+                  ></v-date-picker>
+                </v-menu>
               </v-col>
               <v-col cols="12">
                 <v-text-field type="number" v-model="editedRecord.biontech" label="Biontech & Pfizer" />
@@ -65,6 +88,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: "ImpfungEditDialog",
   props: {
@@ -90,7 +115,8 @@ export default {
         jandj: 0,
         moderna: 0,
         astrazeneca: 0
-      }
+      },
+      datemenu: false,
     }
   },
   computed: {
@@ -99,6 +125,9 @@ export default {
     },
     isValid () {
       return (this.editedRecord.date !== '')
+    },
+    dateFormatted () {
+      return this.editedRecord.date ? moment(this.editedRecord.date).format('dddd, Do MMMM YYYY') : ''
     }
   },
   mounted () {
@@ -108,6 +137,8 @@ export default {
       this.editedRecord.jandj = this.record.jandj
       this.editedRecord.moderna = this.record.moderna
       this.editedRecord.astrazeneca = this.record.astrazeneca
+    } else {
+      this.initForm()
     }
   },
   methods: {
@@ -115,12 +146,13 @@ export default {
       this.dialog = false
     },
     async save () {
+      console.log('save')
       if (this.newRecord) {
         if (this.isValid) {
-          // await this.$store.dispatch('brauaktionen/createBrauaktion', { id: this.idByDate(this.editedAktion.date), brauaktion: this.editedAktion })
+          await this.$store.dispatch('impfungen/createImpfung', this.editedRecord)
           this.initForm()
         } else {
-          // this.$toast.warning('Bitte fülle alle Felder aus.')
+          this.$toast.warning('Bitte füllen Sie alle Felder aus.')
           return
         }
       } else {
@@ -137,27 +169,17 @@ export default {
           }
         })
         if (confirmation) {
-          /*
-          const newData = { title: this.editedEntry.title, description: this.editedEntry.description, date: this.editedEntry.date }
-          db.collection('brauaktionen').doc(this.brauaktion).collection('ablauf').doc(this.entry.id).set(newData).then(() => {
-            this.$toast.success('Eintrag wurde erstellt.')
-          }).catch((error) => {
-            this.$toast.error('Fehler beim Erstellen des Eintrags: ' + error)
-          })
-           */
+          await this.$store.dispatch('impfungen/createImpfung', this.editedRecord)
         }
       }
       this.close()
     },
     initForm () {
-      this.editedRecord.date = ''
+      this.editedRecord.date = moment(new Date).format('YYYY-MM-DD')
       this.editedRecord.biontech = 0
       this.editedRecord.jandj = 0
       this.editedRecord.moderna = 0
       this.editedRecord.astrazeneca = 0
-    },
-    idByDate (date) {
-      return date.substr(0, 10)
     }
   }
 }

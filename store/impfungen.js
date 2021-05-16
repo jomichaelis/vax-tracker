@@ -27,11 +27,11 @@ export const actions = {
   unbindImpfungen: firestoreAction(({ unbindFirestoreRef }) => {
     return unbindFirestoreRef('impfungen')
   }),
-  createImpfung (context, payload) {
-    this.$fire.firestore.collection('user/'+this.$fire.auth.currentUser.uid+'/impfungen').add(payload).then(() => {
-      // this.$toast.success('Gottesdienst wurde erstellt.')
+  async createImpfung (context, payload) {
+    this.$fire.firestore.collection('user/'+this.$fire.auth.currentUser.uid+'/impfungen').doc(payload.date).set(payload).then(() => {
+      this.$toast.success('Eintrag wurde erstellt.')
     }).catch((error) => {
-      // this.$toast.error('Fehler beim Erstellen des Gottesdienstes: ' + error)
+      this.$toast.error('Fehler beim Erstellen des Eintrags: ' + error)
     })
   },
   editImpfung (context, payload) {
@@ -41,11 +41,11 @@ export const actions = {
       // this.$toast.error('Fehler beim Bearbeiten des Gottesdienstes: ' + error)
     })
   },
-  deleteImpfung (context, impfungID) {
+  async deleteImpfung (context, impfungID) {
     this.$fire.firestore.collection('user/'+this.$fire.auth.currentUser.uid+'/impfungen').doc(impfungID).delete().then(() => {
-      // this.$toast.success('Gottesdienst wurde gelöscht.')
+      this.$toast.success('Eintrag wurde gelöscht.')
     }).catch((error) => {
-      // this.$toast.error('Fehler beim Löschen des Gottesdienstes: ' + error)
+      this.$toast.error('Fehler beim Löschen des Eintrags: ' + error)
     })
   }
 }

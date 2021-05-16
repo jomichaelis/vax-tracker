@@ -115,22 +115,23 @@
               </v-form>
             </v-card-text>
           </v-card>
+          <v-container style="height: 50px;" />
         </v-col>
       </v-row>
-    </v-container>
-    <v-footer
-      dark
-      absolute
-      color="#0D518C"
-      style="border-top: 1px solid #c2c2c2"
-    >
-      <v-col
-        class="text-center py-1"
-        cols="12"
+      <v-footer
+        dark
+        absolute
+        color="#0D518C"
+        style="border-top: 1px solid #c2c2c2"
       >
-        &copy; {{ new Date().getFullYear() }} — <a href="http://jomichaelis.de" target="_blank"> Impressum</a>
-      </v-col>
-    </v-footer>
+        <v-col
+          class="text-center py-1"
+          cols="12"
+        >
+          &copy; {{ new Date().getFullYear() }} — <a href="http://jomichaelis.de" target="_blank"> Impressum</a>
+        </v-col>
+      </v-footer>
+    </v-container>
   </v-app>
 </template>
 
